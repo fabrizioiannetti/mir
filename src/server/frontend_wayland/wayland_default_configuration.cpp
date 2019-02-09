@@ -20,6 +20,7 @@
 #include "wayland_connector.h"
 #include "xdg_shell_v6.h"
 #include "xdg_shell_stable.h"
+#include "xdg_decoration_v1.h"
 #include "layer_shell_v1.h"
 #include "xwayland_wm_shell.h"
 #include "mir_display.h"
@@ -36,6 +37,7 @@ auto const wl_shell       = "wl_shell";
 auto const xdg_shell      = "xdg_wm_base";
 auto const xdg_shell_v6   = "zxdg_shell_v6";
 auto const layer_shell_v1 = "zwlr_layer_shell_v1";
+auto const zxdg_decoration_v1 = "zxdg_decoration_manager_v1";
 
 auto configure_wayland_extensions(std::string extensions, bool x11_enabled) -> std::unique_ptr<mf::WaylandExtensions>
 {
@@ -62,6 +64,10 @@ auto configure_wayland_extensions(std::string extensions, bool x11_enabled) -> s
 
             if (extension.find(layer_shell_v1) != extension.end())
                 add_extension(layer_shell_v1, std::make_shared<mf::LayerShellV1>(display, shell, *seat,
+                                                                                 output_manager));
+
+            if (extension.find(zxdg_decoration_v1) != extension.end())
+                add_extension(layer_shell_v1, std::make_shared<mf::XdgDecorationManagerV1>(display, shell, *seat,
                                                                                  output_manager));
 
             if (x11_enabled)
